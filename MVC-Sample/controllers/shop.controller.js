@@ -16,14 +16,17 @@ exports.addProduct = (req, res, next) => {
   res.redirect('/');
 };
 
+
+/***** pass callback method to fetchAllProducts and move all the rendering code inside th callback */
 exports.getProducts = (req, res, next) => {
-  const products = Product.fetchAllProducts();
-  res.render('shop', {
-    prods: products,
-    pageTitle: 'Shop',
-    path: '/',
-    hasProducts: products.length > 0,
-    activeShop: true,
-    productCSS: true,
+  Product.fetchAllProducts((products) => {
+    res.render('shop', {
+      prods: products,
+      pageTitle: 'Shop',
+      path: '/',
+      hasProducts: products.length > 0,
+      activeShop: true,
+      productCSS: true,
+    });
   });
 };
