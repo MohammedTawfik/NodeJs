@@ -11,7 +11,7 @@ module.exports = class Product {
   }
 
   save() {
-    const products = [];
+    let products = [];
     fs.readFile(filePath, (error, fileContent) => {
       if (!error) {
         products = JSON.parse(fileContent);
