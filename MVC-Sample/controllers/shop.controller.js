@@ -4,10 +4,10 @@ const path = require('../util/path');
 /***** pass callback method to fetchAllProducts and move all the rendering code inside th callback */
 exports.getProducts = (req, res, next) => {
   Product.fetchAllProducts((products) => {
-    res.render('shop/products-list', {
+    res.render('shop/product-list', {
       prods: products,
       pageTitle: 'Products List',
-      path: '/products-list',
+      path: '/product-list',
     });
   });
 };
@@ -33,5 +33,12 @@ exports.getCheckout = (req, res, next) => {
   res.render('shop/checkout', {
     path: '/checkout',
     pageTitle: 'Checkout',
+  });
+};
+
+exports.getCheckout = (req, res, next) => {
+  res.render('shop/orders', {
+    path: '/orders',
+    pageTitle: 'Orders',
   });
 };

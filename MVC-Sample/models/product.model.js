@@ -6,8 +6,11 @@ const filePath = path.join(pathUtil, 'data', 'products.json');
 
 //in this case of exporting a class we must use MODULE.EXPORTS as using EXPORTS only will cause errors
 module.exports = class Product {
-  constructor(productTitle) {
+  constructor(productTitle,description,imageUrl,price) {
     this.title = productTitle;
+    this.description = description;
+    this.imageUrl = imageUrl;
+    this.price = price;
   }
 
   save() {
