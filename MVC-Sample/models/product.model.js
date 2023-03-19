@@ -17,7 +17,8 @@ const getProductsData = (callBack)=> {
 
 //in this case of exporting a class we must use MODULE.EXPORTS as using EXPORTS only will cause errors
 module.exports = class Product {
-  constructor(productTitle, description, imageUrl, price) {
+  constructor(id,productTitle, description, imageUrl, price) {
+    this.id = id;
     this.title = productTitle;
     this.description = description;
     this.imageUrl = imageUrl;
@@ -26,12 +27,21 @@ module.exports = class Product {
 
   save() {
     let products = [];
-    this.id = Math.random().toString();
+    
     fs.readFile(filePath, (error, fileContent) => {
       if (!error) {
         products = JSON.parse(fileContent);
       }
-      products.push(this);
+      if(this.id){
+        const currentProductIndex = products.findIndex(prod => prod.id === this.id);
+        const newProducts = [...products];
+        newProducts[currentProductIndex] = this
+        products = [...newProducts];
+      }
+      else{
+        this.id = Math.random().toString();
+        products.push(this);
+      }
       fs.writeFile(filePath, JSON.stringify(products), (error) => {
         console.log(error);
       });
