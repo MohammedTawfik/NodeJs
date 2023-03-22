@@ -72,4 +72,16 @@ module.exports = class Product {
       callBack(product);
     });
   }
+
+  static deleteById(productId){
+    fs.readFile(filePath,(error, fileContent) => {
+      if (!error) {
+        var products = JSON.parse(fileContent);
+        products = products.filter((product) => product.id !== productId);
+        fs.writeFile(filePath, JSON.stringify(products), (error) => {
+          console.log(error);
+        });
+      }
+    })
+  }
 };
