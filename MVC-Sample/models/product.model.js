@@ -1,6 +1,7 @@
 const pathUtil = require('../util/path');
 const path = require('path');
 const fs = require('fs');
+const cart = require('./cart.model');
 
 const filePath = path.join(pathUtil, 'data', 'products.json');
 
@@ -77,9 +78,12 @@ module.exports = class Product {
     fs.readFile(filePath,(error, fileContent) => {
       if (!error) {
         var products = JSON.parse(fileContent);
+        const product = products.find((product) => product.id === productId);
         products = products.filter((product) => product.id !== productId);
         fs.writeFile(filePath, JSON.stringify(products), (error) => {
-          console.log(error);
+          if(!error) {
+            cart.delete(productId,product.price);
+          }
         });
       }
     })
