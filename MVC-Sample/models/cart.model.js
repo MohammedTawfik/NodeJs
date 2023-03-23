@@ -12,7 +12,7 @@ module.exports = class Cart {
       if (!err) {
         cart = JSON.parse(fileContent);
       }
-      if(!cart.products){
+      if (!cart.products) {
         cart = { products: [], totalPrice: 0 };
       }
       const currentProductIndex = cart.products.findIndex(
@@ -21,36 +21,51 @@ module.exports = class Cart {
       const currentProduct = cart.products[currentProductIndex];
       let updatedProduct;
       if (currentProduct) {
-        updatedProduct = {...currentProduct};
-        updatedProduct.qty+=1;
+        updatedProduct = { ...currentProduct };
+        updatedProduct.qty += 1;
         cart.products = [...cart.products];
         cart.products[currentProductIndex] = updatedProduct;
-      }
-      else{
-        updatedProduct = {id: productId , qty:1};
+      } else {
+        updatedProduct = { id: productId, qty: 1 };
         cart.products = [...cart.products, updatedProduct];
       }
       cart.totalPrice += +ProductPrice;
-      fs.writeFile(filePath,JSON.stringify(cart),(err)=>{
+      fs.writeFile(filePath, JSON.stringify(cart), (err) => {
         console.log(err);
       });
     });
   }
 
-  static delete(productId , price){
-    fs.readFile(filePath,(error, fileContent)=>{
-      if(error) {
+  static delete(productId, price) {
+    fs.readFile(filePath, (error, fileContent) => {
+      if (error) {
         return;
       }
       const cartData = JSON.parse(fileContent);
-      const updatedCartData = {...cartData};
-      const updatedProduct = updatedCartData.products.find(prod => prod.id === productId);
+      const updatedCartData = { ...cartData };
+      const updatedProduct = updatedCartData.products.find(
+        (prod) => prod.id === productId
+      );
       const productQuantity = updatedProduct.qty;
-      updatedCartData.products = updatedCartData.products.filter(prod => prod.id !== productId);
-      updatedCartData.totalPrice = updatedCartData.totalPrice - (price * productQuantity);
-      fs.writeFile(filePath,JSON.stringify(updatedCartData),(err)=>{
+      updatedCartData.products = updatedCartData.products.filter(
+        (prod) => prod.id !== productId
+      );
+      updatedCartData.totalPrice =
+        updatedCartData.totalPrice - price * productQuantity;
+      fs.writeFile(filePath, JSON.stringify(updatedCartData), (err) => {
         console.log(err);
       });
+    });
+  }
+
+  static getCart(callBack) {
+    fs.readFile(filePath, (error, fileContent) => {
+      if (error) {
+        callBack(null);
+      } else {
+        const cart = JSON.parse(fileContent);
+        callBack(cart);
+      }
     });
   }
 };
