@@ -13,13 +13,13 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  Product.create({
-    title: title,
-    imageUrl: imageUrl,
-    description: description,
-    price: price,
-    userId: req.user.id
-  })
+  req.user
+    .createProduct({
+      title: title,
+      imageUrl: imageUrl,
+      description: description,
+      price: price,
+    })
     .then((result) => {
       console.log(result);
       res.redirect('/admin/products');
@@ -91,12 +91,13 @@ exports.getProducts = async (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByPk(prodId).then(product => {
-    product.destroy();
-  })
-  .then(result => {
-    console.log('Product Deleted');
-    res.redirect('/admin/products');
-  })
-  .catch(err => console.log(err));
+  Product.findByPk(prodId)
+    .then((product) => {
+      product.destroy();
+    })
+    .then((result) => {
+      console.log('Product Deleted');
+      res.redirect('/admin/products');
+    })
+    .catch((err) => console.log(err));
 };
