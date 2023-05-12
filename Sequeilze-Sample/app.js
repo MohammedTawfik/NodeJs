@@ -4,7 +4,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const sequelize = require('./util/dbConfig');
 const Product = require('./models/product');
-const user = require('./models/user');
 
 const errorController = require('./controllers/error');
 
@@ -16,6 +15,8 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const User = require('./models/user');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -37,10 +38,14 @@ app.use(errorController.get404);
 
 Product.belongsTo(User, { constraints: true, onDelete: 'Cascade' });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, {through:CartItem});
+Product.belongsToMany(Cart, {through: CartItem});
 
 sequelize
-  //.sync({ force: true })  // use force option to remove the existing tables and create new tables
-  .sync()
+  .sync({ force: true })  // use force option to remove the existing tables and create new tables
+  //.sync()
   .then((result) => {
     return User.findByPk(1);
   })
