@@ -44,8 +44,8 @@ Cart.belongsToMany(Product, {through:CartItem});
 Product.belongsToMany(Cart, {through: CartItem});
 
 sequelize
-  .sync({ force: true })  // use force option to remove the existing tables and create new tables
-  //.sync()
+  //.sync({ force: true })  // use force option to remove the existing tables and create new tables
+  .sync()
   .then((result) => {
     return User.findByPk(1);
   })
