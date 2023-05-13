@@ -96,18 +96,23 @@ exports.postCart = async (req, res, next) => {
       });
     }
 
-    res.redirect('/cart');  
+    res.redirect('/cart');
   } catch (error) {
     console.log(error);
   }
 };
 
-exports.postCartDeleteProduct = (req, res, next) => {
+exports.postCartDeleteProduct = async (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId, (product) => {
-    Cart.deleteProduct(prodId, product.price);
+
+  try {
+    const userCart = await req.user.getCart();
+    const cartProducts = await userCart.getProducts({ where: { id: prodId } });
+    await cartProducts[0].cartItem.destroy();
     res.redirect('/cart');
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.getOrders = (req, res, next) => {
