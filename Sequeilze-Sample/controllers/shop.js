@@ -125,16 +125,26 @@ exports.postCreateOrder = async (req, res, next) => {
         return product;
       })
     );
+    //Empty cart
+    await userCart.setProducts(null);
     res.redirect('/orders');
   } catch (error) {
     console.log(error);
   }
 };
 
-exports.getOrders = (req, res, next) => {
+exports.getOrders = async (req, res, next) => {
+  try {
+    
+  } catch (error) {
+    console.log(error)
+  }
+  const userOrders = await req.user.getOrders({include: ['products']});
+
   res.render('shop/orders', {
     path: '/orders',
     pageTitle: 'Your Orders',
+    orders: userOrders
   });
 };
 
