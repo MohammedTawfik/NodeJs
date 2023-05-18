@@ -1,31 +1,30 @@
-const MongoClient = require('mongodb').MongoClient;
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
 
-let _db = null;
+let _db;
 
-async function DbConnect() {
-  try {
-    let url =
-      'mongodb+srv://admin:Windows.2000@cluster0.xwfguxf.mongodb.net/mysampledb?retryWrites=true&w=majority';
-    let _db = await MongoClient.connect(url);
-  } catch (e) {
-    return e;
+const mongoConnect = callback => {
+  MongoClient.connect(
+    'mongodb+srv://admin:Windows.2000@cluster0.xwfguxf.mongodb.net/mysampledb?retryWrites=true&w=majority'
+  )
+    .then(client => {
+      console.log('Connected!');
+      _db = client.db();
+      callback();
+    })
+    .catch(err => {
+      console.log(err);
+      throw err;
+    });
+};
+
+const getDb = () => {
+  if (_db) {
+    return _db;
   }
-}
+  throw 'No database found!';
+};
 
-async function Get() {
-  try {
+exports.mongoConnect = mongoConnect;
+exports.getDb = getDb;
 
-    if (db != null) {
-      return db;
-    } else {
-      db = await DbConnect();
-      return db;
-    }
-  } catch (e) {
-    return e;
-  }
-}
-
-
-exports.DbConnect = DbConnect;
-exports.GetDbConnection = Get;
